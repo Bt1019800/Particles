@@ -10,8 +10,8 @@ using namespace std;
 
 Engine::Engine()
 {
-    width = VideoMode::getDesktopMode().width;
-    height = VideoMode::getDesktopMode().height;
+    int width = VideoMode::getDesktopMode().width;
+    int height = VideoMode::getDesktopMode().height;
     VideoMode vm(width, height);
     m_Window.create(vm, "Particles.exe", Style::Default);
 }
@@ -30,13 +30,13 @@ void Engine::run()
     {
         Time time2 = clock.restart();
         float seconds = time2.asSeconds();
-        m_Window.input();
-        m_Window.update(seconds);
-        m_Window.draw();
+        input();
+        update(seconds);
+        draw();
     }
 }
 
-void Input()
+void Engine::input()
 {
     srand(time(0));
     Event event;
@@ -55,21 +55,22 @@ void Input()
                 for (size_t i = 0; i < 5; i++)
                 {
                     int numPoints = (rand() % 51) + 25;
-                    Particle particle(m_Window, numPoints, location);  
+                    Particle particle(m_Window, numPoints, location);
+                    m_particles.push_back(particle); 
                 }
             }
         }
 
         if(Keyboard::isKeyPressed(Keyboard::Escape))
         {
-            window.close();
+            m_Window.close();
         }
     }
 }
 
 void Engine::update(float dtAsSeconds)
 {
-    for (size_t i = 0; i < m_particles.size())
+    for (size_t i = 0; i < m_particles.size(); )
     {
         if (m_particles[i].getTTL() == 0)
         {
@@ -84,9 +85,7 @@ void Engine::update(float dtAsSeconds)
 
         else
         {
-           size_t = temp;
-           temp = m_particles.erase(m_particles.begin() + i);
-           i = temp;
+            i = m_particles.erase(m_particles.begin() + i) - m_particles.begin();
         }
     }    
 }
